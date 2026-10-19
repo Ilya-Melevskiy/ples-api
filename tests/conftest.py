@@ -1,6 +1,7 @@
 import allure
 import pytest
 from faker import Faker
+import re
 
 
 @pytest.hookimpl(hookwrapper=True)
@@ -27,3 +28,21 @@ def faker_ru():
 @pytest.fixture
 def faker_eu():
     return Faker()
+
+
+@pytest.fixture
+def faker_phone_number(faker_ru):
+    phone = faker_ru.phone_number()
+    digits = re.sub(r"\D", "", phone)
+    formatted_phone = "+79" + digits[2:]
+
+    return formatted_phone
+
+
+@pytest.fixture
+def faker_phone_number_starting_8(faker_ru):
+    phone = faker_ru.phone_number()
+    digits = re.sub(r"\D", "", phone)
+    formatted_phone = "89" + digits[2:]
+
+    return formatted_phone

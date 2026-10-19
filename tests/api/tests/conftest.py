@@ -2,38 +2,38 @@ import pytest
 from faker import Faker
 
 from api.client import APIClient
-from api.endpoints import Endpoints
+from api.endpoints import AuthEndpoints
 from config.settings import settings
 
 
-@pytest.fixture(scope="session")
-def auth_token():
-    """
-    Логин один раз за сессию.
-    """
-    raw = APIClient(token="")
-    try:
-        r = raw.post(
-            Endpoints.LOGIN,
-            json={
-                "username": settings.username,
-                "password": settings.password,
-            },
-        )
-        r.raise_for_status()
-        return r.json()["access_token"]
-    finally:
-        raw.close()
+# @pytest.fixture(scope="session")
+# def auth_token():
+#     """
+#     Логин один раз за сессию.
+#     """
+#     raw = APIClient(token="")
+#     try:
+#         r = raw.post(
+#             AuthEndpoints.LOGIN_BY_EMAIL,
+#             json={
+#                 "username": settings.username,
+#                 "password": settings.password,
+#             },
+#         )
+#         r.raise_for_status()
+#         return r.json()["access_token"]
+#     finally:
+#         raw.close()
 
 
-@pytest.fixture(scope="session")
-def auth_client(auth_token):
-    """
-    Авторизованный APIClient на всю сессию.
-    """
-    api = APIClient(token=auth_token)
-    yield api
-    api.close()
+# @pytest.fixture(scope="session")
+# def auth_client(auth_token):
+#     """
+#     Авторизованный APIClient на всю сессию.
+#     """
+#     api = APIClient(token=auth_token)
+#     yield api
+#     api.close()
 
 
 @pytest.fixture
@@ -62,7 +62,7 @@ def make_user(api_client_no_auth, faker_ru):
         }
         payload.update(overrides)
 
-        r = api_client_no_auth.post(Endpoints.USERS, json=payload)
+        r = api_client_no_auth.post(AuthEndpoints.USERS, json=payload)
         if r.status_code != 201:
             raise AssertionError(f"Create user failed: {r.status_code} {r.text}")
 
@@ -73,4 +73,4 @@ def make_user(api_client_no_auth, faker_ru):
     yield _make
 
     for user_id in created_ids:
-        api_client_no_auth.delete(Endpoints.USER.format(user_id=user_id))
+        api_client_no_auth.delete(AuthEndpoints.USER.format(user_id=user_id))

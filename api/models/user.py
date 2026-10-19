@@ -9,7 +9,7 @@ class Geo(ApiModel):
 
 
 class Address(ApiModel):
-    street: str = Field(min_lenght=1)
+    street: str = Field(min_length=1)
     suite: str
     city: str
     zipcode: str

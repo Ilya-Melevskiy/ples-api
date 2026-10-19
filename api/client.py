@@ -27,15 +27,22 @@ class APIClient:
                     name="request body",
                     attachment_type=allure.attachment_type.JSON,
                 )
+            if "params" in kwargs:
+                allure.attach(str(kwargs["params"]), name="query params")
             response = self.session.request(method, url, **kwargs)
 
             allure.attach(
-                f"status: {response.status_code}\n"
-                f"headers: {dict(response.headers)}\n"
-                f"body: {response.text[:2000]}",
-                name="response",
+                f"status: {response.status_code}\nheaders: {dict(response.headers)}\n",
+                name="response meta",
                 attachment_type=allure.attachment_type.TEXT,
             )
+
+            allure.attach(
+                json.dumps(response.json(), indent=2, ensure_ascii=False),
+                name="response body",
+                attachment_type=allure.attachment_type.JSON,
+            )
+
         return response
 
     def get(self, path: str, **kwargs) -> Response:
