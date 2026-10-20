@@ -119,6 +119,151 @@ class TestRegistrationByEmailSend:
 
 @allure.epic("Users")
 @allure.feature("Регистрация")
+@allure.story("Регистрация: подтвердить OTP (email)")
+class TestRegistrationByEmailConfirm:
+    @allure.title(
+        "POST /api/v1/auth/register/otp/email/confirm Успешное подтверждение OTP с корректным шестизначным кодом"
+    )
+    def test_registration_by_email_confirm_otp_correct_body_200(
+        self, api_client_no_auth, send_otp_email
+    ):
+        email, code = send_otp_email
+        payload = {"email": email, "digitCode": code}
+        response = api_client_no_auth.post(
+            AuthEndpoints.REGISTRATION_EMAIL_CONFIRM_OTP, json=payload
+        )
+
+        assert response.status_code == 200
+        body = response.json()
+        assert body["status"] == "success"
+        assert "Email успешно подтержден" in body["data"]["message"]
+        assert body["errors"] == []
+        assert body["data"]["redirectUrl"] is None
+
+    @allure.title(
+        "POST /api/v1/auth/register/otp/email/confirm Подтверждение с неверным OTP-кодом"
+    )
+    def test_registration_by_email_confirm_otp_incorrect_otp_502(
+        self, api_client_no_auth, send_otp_email
+    ):
+        email, code = send_otp_email
+        incorrect_otp = "111111"
+        payload = {"email": email, "digitCode": incorrect_otp}
+        response = api_client_no_auth.post(
+            AuthEndpoints.REGISTRATION_EMAIL_CONFIRM_OTP, json=payload
+        )
+
+        assert response.status_code == 502
+        body = response.json()
+        assert body["status"] == "error"
+        assert body["data"] is None
+        assert (
+            "Введен некорректный код или срок его действия истек"
+            in body["errors"][0]["message"]
+        )
+        assert body["errors"][0]["code"] == 0
+        assert body["errors"][0]["customData"] is None
+
+    @allure.title(
+        "POST /api/v1/auth/register/otp/email/confirm Подтверждение для почты без @"
+    )
+    def test_registration_by_email_confirm_otp_email_without_at_502(
+        self, api_client_no_auth, send_otp_email
+    ):
+        email, code = send_otp_email
+        email_without_at = email.replace("@", "", 1)
+        payload = {"email": email_without_at, "digitCode": code}
+        response = api_client_no_auth.post(
+            AuthEndpoints.REGISTRATION_EMAIL_CONFIRM_OTP, json=payload
+        )
+
+        assert response.status_code == 400
+        body = response.json()
+        assert body["status"] == "error"
+        assert body["data"] is None
+        assert (
+            "Значение поля не является адресом электронной почты"
+            in body["errors"][0]["message"]
+        )
+        assert body["errors"][0]["code"] == "email"
+        assert body["errors"][0]["customData"] is None
+
+    @allure.title("POST /api/v1/auth/register/otp/email/confirm Запрос с пустым телом")
+    def test_registration_by_email_confirm_otp_empty_body_400(
+        self, api_client_no_auth, send_otp_email
+    ):
+        email, code = send_otp_email
+        payload = {}
+        response = api_client_no_auth.post(
+            AuthEndpoints.REGISTRATION_EMAIL_CONFIRM_OTP, json=payload
+        )
+
+        assert response.status_code == 400
+        body = response.json()
+        assert body["status"] == "error"
+        assert body["data"] is None
+        assert (
+            "Значение поля не является адресом электронной почты"
+            in body["errors"][0]["message"]
+        )
+        assert body["errors"][0]["code"] == "email"
+        assert body["errors"][0]["customData"] is None
+        assert (
+            "Значения поля не соответствует регулярному выражению"
+            in body["errors"][1]["message"]
+        )
+        assert body["errors"][1]["code"] == "digitCode"
+        assert body["errors"][1]["customData"] is None
+
+    @allure.title(
+        "POST /api/v1/auth/register/otp/email/confirm Запрос без обязательного поля email"
+    )
+    def test_registration_by_email_confirm_otp_email_without_field_email_400(
+        self, api_client_no_auth, send_otp_email
+    ):
+        email, code = send_otp_email
+        payload = {"digitCode": code}
+        response = api_client_no_auth.post(
+            AuthEndpoints.REGISTRATION_EMAIL_CONFIRM_OTP, json=payload
+        )
+
+        assert response.status_code == 400
+        body = response.json()
+        assert body["status"] == "error"
+        assert body["data"] is None
+        assert (
+            "Значение поля не является адресом электронной почты"
+            in body["errors"][0]["message"]
+        )
+        assert body["errors"][0]["code"] == "email"
+        assert body["errors"][0]["customData"] is None
+
+    @allure.title(
+        "POST /api/v1/auth/register/otp/email/confirm Запрос без обязательного поля digitCode"
+    )
+    def test_registration_by_email_confirm_otp_email_without_field_digitcode_400(
+        self, api_client_no_auth, send_otp_email
+    ):
+        email, code = send_otp_email
+        payload = {"email": email}
+        response = api_client_no_auth.post(
+            AuthEndpoints.REGISTRATION_EMAIL_CONFIRM_OTP, json=payload
+        )
+
+        assert response.status_code == 400
+        body = response.json()
+        assert body["status"] == "error"
+        assert body["data"] is None
+        assert (
+            "Значения поля не соответствует регулярному выражению"
+            in body["errors"][0]["message"]
+        )
+        assert body["errors"][0]["code"] == "digitCode"
+        assert body["errors"][0]["customData"] is None
+
+
+@allure.epic("Users")
+@allure.feature("Регистрация")
 @allure.story("Регистрация: отправить OTP (phone)")
 class TestRegistrationByPhoneSend:
     @allure.title(
@@ -232,9 +377,9 @@ class TestRegistrationByPhoneConfirm:
         "POST /api/v1/auth/register/otp/phone/confirm Успешное подтверждение OTP с корректным шестизначным кодом"
     )
     def test_registration_by_phone_confirm_otp_correct_body_200(
-        self, api_client_no_auth, send_otp
+        self, api_client_no_auth, send_otp_phone
     ):
-        phone, code = send_otp
+        phone, code = send_otp_phone
         payload = {"phone": phone, "digitCode": code}
         response = api_client_no_auth.post(
             AuthEndpoints.REGISTRATION_PHONE_CONFIRM_OTP, json=payload
@@ -251,9 +396,9 @@ class TestRegistrationByPhoneConfirm:
         "POST /api/v1/auth/register/otp/phone/confirm Подтверждение с неверным OTP-кодом"
     )
     def test_registration_by_phone_confirm_otp_incorrect_otp_502(
-        self, api_client_no_auth, send_otp
+        self, api_client_no_auth, send_otp_phone
     ):
-        phone, code = send_otp
+        phone, code = send_otp_phone
         incorrect_code = "111111"
         payload = {"phone": phone, "digitCode": incorrect_code}
         response = api_client_no_auth.post(
@@ -276,9 +421,9 @@ class TestRegistrationByPhoneConfirm:
     #     "POST /api/v1/auth/register/otp/phone/confirm Подтверждение для зарегистрированного номера"
     # )
     # def test_registration_by_phone_confirm_otp_existing_phone_502(
-    #     self, api_client_no_auth, send_otp
+    #     self, api_client_no_auth, send_otp_phone
     # ):
-    #     phone, code = send_otp
+    #     phone, code = send_otp_phone
     #     payload = {"phone": phone, "digitCode": code}
     #     response = api_client_no_auth.post(
     #         AuthEndpoints.REGISTRATION_PHONE_CONFIRM_OTP, json=payload
@@ -319,9 +464,9 @@ class TestRegistrationByPhoneConfirm:
         "POST /api/v1/auth/register/otp/phone/confirm Запрос без обязательного поля phone"
     )
     def test_registration_by_phone_confirm_otp_without_field_phone_400(
-        self, api_client_no_auth, send_otp
+        self, api_client_no_auth, send_otp_phone
     ):
-        phone, code = send_otp
+        phone, code = send_otp_phone
         payload = {"digitCode": code}
         response = api_client_no_auth.post(
             AuthEndpoints.REGISTRATION_PHONE_CONFIRM_OTP, json=payload
@@ -339,9 +484,9 @@ class TestRegistrationByPhoneConfirm:
         "POST /api/v1/auth/register/otp/phone/confirm Запрос без обязательного поля digitCode"
     )
     def test_registration_by_phone_confirm_otp_without_field_digitcode_400(
-        self, api_client_no_auth, send_otp
+        self, api_client_no_auth, send_otp_phone
     ):
-        phone, code = send_otp
+        phone, code = send_otp_phone
         payload = {"phone": phone}
         response = api_client_no_auth.post(
             AuthEndpoints.REGISTRATION_PHONE_CONFIRM_OTP, json=payload
@@ -362,9 +507,9 @@ class TestRegistrationByPhoneConfirm:
         "POST /api/v1/auth/register/otp/phone/confirm Запрос без обязательного поля digitCode"
     )
     def test_registration_by_phone_confirm_otp_phone_starting_8(
-        self, api_client_no_auth, send_otp
+        self, api_client_no_auth, send_otp_phone
     ):
-        phone, code = send_otp
+        phone, code = send_otp_phone
         phone_starting_8 = phone.replace("+7", "8", 1)
         payload = {"phone": phone_starting_8, "digitCode": code}
         response = api_client_no_auth.post(

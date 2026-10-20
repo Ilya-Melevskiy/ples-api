@@ -5,6 +5,7 @@ from api.client import APIClient
 from api.endpoints import AuthEndpoints
 from config.settings import settings
 from utils.sms import SMSService
+from utils.email import EmailService
 
 
 # @pytest.fixture(scope="session")
@@ -40,7 +41,7 @@ from utils.sms import SMSService
 @pytest.fixture
 def api_client_no_auth():
     """
-    Клиент без токена — для негативных тестов (401).
+    Неавторизованный клиент
     """
     api = APIClient(token="")
     yield api
@@ -78,7 +79,7 @@ def make_user(api_client_no_auth, faker_ru):
 
 
 @pytest.fixture
-def send_otp(api_client_no_auth, faker_phone_number_starting_plus_7, db_cursor):
+def send_otp_phone(api_client_no_auth, faker_phone_number_starting_plus_7, db_cursor):
     """Отправляет OTP и возвращает (phone, code)."""
     phone = faker_phone_number_starting_plus_7
 
@@ -90,3 +91,15 @@ def send_otp(api_client_no_auth, faker_phone_number_starting_plus_7, db_cursor):
 
     code = SMSService.get_otp_code(db_cursor, phone, timeout=15)
     return phone, code
+
+
+@pytest.fixture
+def send_otp_email(api_client_no_auth, faker_ru, db_cursor):
+    """Отправляет OTP и возвращает (email, code)."""
+    email = faker_ru.email()
+    payload = {"email": email}
+    r = api_client_no_auth.post(AuthEndpoints.REGISTRATION_EMAIL_SEND_OTP, json=payload)
+    assert r.status_code == 200, r.text
+
+    code = EmailService.get_otp_code(db_cursor, email, timeout=15)
+    return email, code
