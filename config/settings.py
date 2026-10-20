@@ -13,6 +13,11 @@ class Settings:
     token: str = os.getenv("TOKEN", "")
     username: str = os.getenv("USER_NAME")
     password: str = os.getenv("PASSWORD")
+    db_host: str = os.getenv("DB_HOST", "")
+    db_port: int = int(os.getenv("DB_PORT", ""))
+    db_user: str = os.getenv("DB_USER", "")
+    db_password: str = os.getenv("DB_PASSWORD", "")
+    db_name: str = os.getenv("DB_NAME", "")
 
 
 settings = Settings()

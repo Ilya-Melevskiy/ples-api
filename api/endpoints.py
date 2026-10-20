@@ -13,5 +13,5 @@ class AuthEndpoints:
     REGISTRATION_EMAIL_SEND_OTP = "/api/v1/auth/register/otp/email/send"
     REGISTRATION_EMAIL_CONFIRM_OTP = "/api/v1/auth/register/otp/email/confirm"
     REGISTRATION_PHONE_SEND_OTP = "/api/v1/auth/register/otp/phone/send"
-    REGISTRATION_PHONE_CONFIRM = "/api/v1/auth/register/otp/phone/confirm"
+    REGISTRATION_PHONE_CONFIRM_OTP = "/api/v1/auth/register/otp/phone/confirm"
     COMPLETION_REGISTRATION = "/api/v1/auth/register/submit  "

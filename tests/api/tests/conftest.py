@@ -4,6 +4,7 @@ from faker import Faker
 from api.client import APIClient
 from api.endpoints import AuthEndpoints
 from config.settings import settings
+from utils.sms import SMSService
 
 
 # @pytest.fixture(scope="session")
@@ -74,3 +75,18 @@ def make_user(api_client_no_auth, faker_ru):
 
     for user_id in created_ids:
         api_client_no_auth.delete(AuthEndpoints.USER.format(user_id=user_id))
+
+
+@pytest.fixture
+def send_otp(api_client_no_auth, faker_phone_number_starting_plus_7, db_cursor):
+    """Отправляет OTP и возвращает (phone, code)."""
+    phone = faker_phone_number_starting_plus_7
+
+    r = api_client_no_auth.post(
+        AuthEndpoints.REGISTRATION_PHONE_SEND_OTP,
+        json={"phone": phone},
+    )
+    assert r.status_code == 200, r.text
+
+    code = SMSService.get_otp_code(db_cursor, phone, timeout=15)
+    return phone, code
