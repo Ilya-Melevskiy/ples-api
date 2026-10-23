@@ -3,7 +3,6 @@ from faker import Faker
 
 from api.client import APIClient
 from api.endpoints import UserEndpoints
-from config.settings import settings
 from utils.sms import SMSService
 from utils.email import EmailService
 
@@ -159,3 +158,47 @@ def registration_legal_person(
     )
     assert response_submit.status_code == 200, response_submit.text
     return {"phone": phone, "password": password, "email": email, "inn": inn}
+
+
+@pytest.fixture
+def forgot_password_send_otp_email(
+    api_client_no_auth, registration_natural_person, db_cursor
+):
+    """Отправляет OTP и возвращает (email, code) для восстановления пароля"""
+    email = registration_natural_person["email"]
+    payload = {"email": email}
+    r = api_client_no_auth.post(
+        UserEndpoints.FORGOT_PASSWORD_EMAIL_SEND_OTP, json=payload
+    )
+    assert r.status_code == 200, r.text
+
+    code = EmailService.get_otp_code(db_cursor, email)
+    return email, code
+
+
+@pytest.fixture
+def forgot_password_send_otp_phone(
+    api_client_no_auth, registration_natural_person, db_cursor
+):
+    """Отправляет OTP и возвращает (phone, code) для восстановления пароля"""
+    phone = registration_natural_person["phone"]
+
+    r = api_client_no_auth.post(
+        UserEndpoints.FORGOT_PASSWORD_PHONE_SEND_OTP,
+        json={"phone": phone},
+    )
+    assert r.status_code == 200, r.text
+
+    code = SMSService.get_otp_code(db_cursor, phone)
+    return phone, code
+
+
+@pytest.fixture
+def login_by_email(api_client_no_auth, registration_natural_person):
+    email = registration_natural_person["email"]
+    password = registration_natural_person["password"]
+    payload = {"email": email, "password": password}
+    response = api_client_no_auth.post(UserEndpoints.LOGIN_BY_EMAIL, json=payload)
+
+    assert response.status_code == 200, response.text
+    return {"email": email, "password": password}
