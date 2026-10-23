@@ -1,4 +1,4 @@
-class AuthEndpoints:
+class UserEndpoints:
     LOGIN_BY_EMAIL = "/api/v1/auth/login/email"
     LOGIN_BY_PHONE = "/api/v1/auth/login/phone"
     FORGOT_PASSWORD_EMAIL_SEND_OTP = "/api/v1/auth/forgotPassword/email/otp/send"
@@ -14,4 +14,4 @@ class AuthEndpoints:
     REGISTRATION_EMAIL_CONFIRM_OTP = "/api/v1/auth/register/otp/email/confirm"
     REGISTRATION_PHONE_SEND_OTP = "/api/v1/auth/register/otp/phone/send"
     REGISTRATION_PHONE_CONFIRM_OTP = "/api/v1/auth/register/otp/phone/confirm"
-    COMPLETION_REGISTRATION = "/api/v1/auth/register/submit  "
+    REGISTRATION_COMPLETION = "/api/v1/auth/register/submit"

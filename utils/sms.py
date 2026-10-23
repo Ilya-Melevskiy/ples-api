@@ -18,18 +18,14 @@ class SMSService:
 
         phone_with_plus = phone if phone.startswith("+") else f"+{phone}"
 
-        db_cursor.execute("SELECT NOW() AS start_time")
-        start_time = db_cursor.fetchone()["start_time"]
-
         deadline = time.monotonic() + timeout
 
         while time.monotonic() < deadline:
             db_cursor.execute(
                 "SELECT DESCRIPTION, TIMESTAMP_X FROM b_event_log "
                 "WHERE AUDIT_TYPE_ID=%s AND ITEM_ID=%s "
-                "AND TIMESTAMP_X >= %s "
                 "ORDER BY TIMESTAMP_X DESC LIMIT 1",
-                ("Debug SMS", phone_with_plus, start_time),
+                ("Debug SMS", phone_with_plus),
             )
             message = db_cursor.fetchone()
 

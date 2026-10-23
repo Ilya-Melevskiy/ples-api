@@ -28,17 +28,34 @@ def faker_ru():
 
 
 @pytest.fixture
+def make_valid_inn_10() -> str:
+    """ИНН юрлица (10 цифр), первая цифра не 0."""
+
+    fake = Faker("ru_RU")
+    while True:
+        inn = fake.businesses_inn()
+        if inn[0] != "0":
+            return inn
+
+
+@pytest.fixture
 def faker_eu():
     return Faker()
 
 
 @pytest.fixture
 def faker_phone_number_starting_plus_7(faker_ru):
-    phone = faker_ru.phone_number()
-    digits = re.sub(r"\D", "", phone)
-    formatted_phone = "+79" + digits[2:]
+    """
+    Фабрика: возвращает callable, который генерирует новый номер
+    при каждом вызове. Формат: +7XXXXXXXXXX.
+    """
 
-    return formatted_phone
+    def _generate() -> str:
+        phone = faker_ru.phone_number()
+        digits = re.sub(r"\D", "", phone)
+        return f"+79{digits[2:]}"
+
+    return _generate
 
 
 @pytest.fixture

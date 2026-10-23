@@ -7,18 +7,15 @@ class EmailService:
     def get_otp_code(
         db_cursor,
         email: str,
-        timeout: float = 5,
+        timeout: float = 15,
         poll_interval: float = 0.5,
-        event_name: str = "EMAIL_USER_OTP_AUTH_CODE",
     ) -> str:
         """
-        Ждёт письмо с OTP-кодом на email, появившееся в b_event после старта метода.
-        Ищет OTP_CODE в C_FIELDS, сортирует по DATE_EXEC (последнее — первым).
-        Фильтрует по EVENT_NAME (по умолчанию — EMAIL_USER_OTP_AUTH_CODE).
+        Ждёт письмо с OTP-кодом на email в b_event.
+        Ищет OTP_CODE в C_FIELDS, берёт последнее по DATE_EXEC.
+        Фильтр по EVENT_NAME = EMAIL_USER_OTP_AUTH_CODE.
+        Без фильтра по времени — email уникален на тест (faker), race не нужен.
         """
-        db_cursor.execute("SELECT NOW() AS start_time")
-        start_time = db_cursor.fetchone()["start_time"]
-
         deadline = time.monotonic() + timeout
 
         while time.monotonic() < deadline:
@@ -26,9 +23,8 @@ class EmailService:
                 "SELECT C_FIELDS, DATE_EXEC FROM b_event "
                 "WHERE EVENT_NAME = %s "
                 "AND C_FIELDS LIKE %s "
-                "AND DATE_EXEC >= %s "
                 "ORDER BY DATE_EXEC DESC LIMIT 1",
-                (event_name, f"%{email}%", start_time),
+                ("EMAIL_USER_OTP_AUTH_CODE", f"%{email}%"),
             )
             row = db_cursor.fetchone()
 
