@@ -17,7 +17,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -47,7 +47,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -87,7 +87,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -119,7 +119,7 @@ class TestRegistrationSubmit:
         phone = faker_phone_number_starting_plus_7()
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -172,7 +172,7 @@ class TestRegistrationSubmit:
         body = response.json()
         assert body["status"] == "error"
         assert (
-            f"Пользователь с таким email ({email}) уже существует"
+            f"Пользователь с таким email ({email.lower()}) уже существует"
             in body["errors"][0]["message"]
         )
         assert body["errors"][0]["code"] == 0
@@ -191,7 +191,7 @@ class TestRegistrationSubmit:
         inn = registration_legal_person["inn"]
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -305,7 +305,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "passwordRepeat": password,
                 "firstName": faker_ru.first_name(),
@@ -337,7 +337,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "firstName": faker_ru.first_name(),
@@ -369,7 +369,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -401,7 +401,7 @@ class TestRegistrationSubmit:
         password = faker_ru.pystr(min_chars=6, max_chars=6)
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -440,7 +440,7 @@ class TestRegistrationSubmit:
         password = faker_ru.numerify(text="#" * 6)
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -477,7 +477,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -516,7 +516,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -558,7 +558,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -600,7 +600,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -637,7 +637,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -676,7 +676,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,
@@ -718,7 +718,7 @@ class TestRegistrationSubmit:
         password = f"a1{faker_ru.password(length=4)}"
         payload = {
             "general": {
-                "email": faker_ru.email(),
+                "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
                 "phone": phone,
                 "password": password,
                 "passwordRepeat": password,

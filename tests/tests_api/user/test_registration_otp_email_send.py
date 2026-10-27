@@ -13,7 +13,7 @@ class TestRegistrationOtpEmailSend:
     def test_registration_by_email_send_otp_correct_body_200(
         self, api_client_no_auth, faker_ru
     ):
-        email = faker_ru.email()
+        email = f"{faker_ru.bothify(text='autotest????####')}@example.test"
         payload = {"email": email}
         response = api_client_no_auth.post(
             UserEndpoints.REGISTRATION_EMAIL_SEND_OTP, json=payload
@@ -22,7 +22,7 @@ class TestRegistrationOtpEmailSend:
         assert response.status_code == 200
         body = response.json()
         assert body["status"] == "success"
-        assert email in body["data"]["message"]
+        assert email.lower() in body["data"]["message"]
         assert body["data"]["redirectUrl"] is None
         assert body["errors"] == []
 
@@ -32,7 +32,7 @@ class TestRegistrationOtpEmailSend:
     def test_registration_by_email_send_otp_before_minute_502(
         self, api_client_no_auth, faker_ru
     ):
-        email = faker_ru.email()
+        email = f"{faker_ru.bothify(text='autotest????####')}@example.test"
         payload = {"email": email}
         api_client_no_auth.post(UserEndpoints.REGISTRATION_EMAIL_SEND_OTP, json=payload)
         response = api_client_no_auth.post(

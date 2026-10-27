@@ -51,24 +51,22 @@ def faker_phone_number_starting_plus_7(faker_ru):
     """
 
     def _generate() -> str:
-        phone = faker_ru.phone_number()
-        digits = re.sub(r"\D", "", phone)
-        return f"+79{digits[2:]}"
+        phone = faker_ru.numerify(text="+7977#######")
+        return phone
 
     return _generate
 
 
 @pytest.fixture
 def faker_phone_number_starting_8(faker_ru):
-    phone = faker_ru.phone_number()
-    digits = re.sub(r"\D", "", phone)
-    formatted_phone = "89" + digits[2:]
-
-    return formatted_phone
+    """Номер телефона, который начинается с 8"""
+    phone = faker_ru.numerify(text="8977#######")
+    return phone
 
 
 @pytest.fixture(scope="session")
 def db_connection():
+    """Подключение к БД"""
     conn = pymysql.connect(
         host=settings.db_host,
         port=settings.db_port,

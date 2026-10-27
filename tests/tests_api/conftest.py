@@ -22,7 +22,7 @@ fake = Faker()
 
 @pytest.fixture
 def send_otp_phone(api_client_no_auth, faker_phone_number_starting_plus_7, db_cursor):
-    """Отправляет OTP и возвращает (phone, code)."""
+    """Отправляет OTP на номер и возвращает (phone, code)."""
     phone = faker_phone_number_starting_plus_7()
 
     r = api_client_no_auth.post(
@@ -37,8 +37,8 @@ def send_otp_phone(api_client_no_auth, faker_phone_number_starting_plus_7, db_cu
 
 @pytest.fixture
 def send_otp_email(api_client_no_auth, faker_ru, db_cursor):
-    """Отправляет OTP и возвращает (email, code)."""
-    email = faker_ru.email()
+    """Отправляет OTP на почту и возвращает (email, code)."""
+    email = f"{faker_ru.bothify(text='autotest????####')}@example.test"
     payload = {"email": email}
     r = api_client_no_auth.post(UserEndpoints.REGISTRATION_EMAIL_SEND_OTP, json=payload)
     assert r.status_code == 200, r.text
@@ -61,7 +61,7 @@ def confirm_otp_phone(api_client_no_auth, send_otp_phone):
 
 @pytest.fixture
 def confirm_otp_email(api_client_no_auth, send_otp_email):
-    """Подтверждает OTP код по номеру и возвращает (phone)"""
+    """Подтверждает OTP код по почте и возвращает (phone)"""
     email, code = send_otp_email
     payload = {"email": email, "digitCode": code}
     r = api_client_no_auth.post(
@@ -75,7 +75,7 @@ def confirm_otp_email(api_client_no_auth, send_otp_email):
 def registration_natural_person(
     api_client_no_auth, faker_phone_number_starting_plus_7, faker_ru, db_cursor
 ):
-    """Регистрирует пользователя и возвращает (phone, password, email)"""
+    """Регистрирует пользователя (физ. лицо) и возвращает (phone, password, email)"""
     phone = faker_phone_number_starting_plus_7()
     response_send = api_client_no_auth.post(
         UserEndpoints.REGISTRATION_PHONE_SEND_OTP,
@@ -91,7 +91,7 @@ def registration_natural_person(
     assert response_confirm.status_code == 200, response_confirm.text
 
     password = f"a1{faker_ru.password(length=4)}"
-    email = faker_ru.email()
+    email = f"{faker_ru.bothify(text='autotest????####')}@example.test"
     payload_registration = {
         "general": {
             "email": email,
@@ -112,9 +112,13 @@ def registration_natural_person(
 
 @pytest.fixture
 def registration_legal_person(
-    api_client_no_auth, faker_phone_number_starting_plus_7, faker_ru, db_cursor
+    api_client_no_auth,
+    faker_phone_number_starting_plus_7,
+    faker_ru,
+    db_cursor,
+    make_valid_inn_10,
 ):
-    """Регистрирует пользователя и возвращает (phone, password, email)"""
+    """Регистрирует пользователя (юр. лицо) и возвращает (phone, password, email)"""
     phone = faker_phone_number_starting_plus_7()
     response_send = api_client_no_auth.post(
         UserEndpoints.REGISTRATION_PHONE_SEND_OTP,
@@ -130,11 +134,11 @@ def registration_legal_person(
     assert response_confirm.status_code == 200, response_confirm.text
 
     password = f"a1{faker_ru.password(length=4)}"
-    email = faker_ru.email()
-    inn = faker_ru.businesses_inn()
+    email = f"{faker_ru.bothify(text='autotest????####')}@example.test"
+    inn = make_valid_inn_10
     payload_registration = {
         "general": {
-            "email": faker_ru.email(),
+            "email": f"{faker_ru.bothify(text='autotest????####')}@example.test",
             "phone": phone,
             "password": password,
             "passwordRepeat": password,
@@ -164,7 +168,7 @@ def registration_legal_person(
 def forgot_password_send_otp_email(
     api_client_no_auth, registration_natural_person, db_cursor
 ):
-    """Отправляет OTP и возвращает (email, code) для восстановления пароля"""
+    """Отправляет OTP по номеру и возвращает (email, code) для восстановления пароля"""
     email = registration_natural_person["email"]
     payload = {"email": email}
     r = api_client_no_auth.post(
@@ -180,7 +184,7 @@ def forgot_password_send_otp_email(
 def forgot_password_send_otp_phone(
     api_client_no_auth, registration_natural_person, db_cursor
 ):
-    """Отправляет OTP и возвращает (phone, code) для восстановления пароля"""
+    """Отправляет OTP по почте и возвращает (phone, code) для восстановления пароля"""
     phone = registration_natural_person["phone"]
 
     r = api_client_no_auth.post(
@@ -223,6 +227,10 @@ def forgot_password_confirm_otp_email(
 
 @pytest.fixture
 def login_by_email(api_client_no_auth, registration_natural_person):
+    """
+    Регистрирует пользователя (физ. лицо) и авторизовывается под ним,
+    возвращает (api_client_auth), email, password
+    """
     email = registration_natural_person["email"]
     password = registration_natural_person["password"]
     payload = {"email": email, "password": password}

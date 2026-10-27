@@ -53,7 +53,7 @@ class TestForgotPasswordByOtpEmailConfirm:
     def test_forgot_password_by_email_confirm_otp_unregistered_email_502(
         self, api_client_no_auth, faker_ru
     ):
-        email = faker_ru.email()
+        email = f"{faker_ru.bothify(text='autotest????####')}@example.test"
         code = faker_ru.numerify(text="######")
         payload = {"email": email, "digitCode": code}
         response = api_client_no_auth.post(
@@ -129,7 +129,7 @@ class TestForgotPasswordByOtpEmailConfirm:
     def test_forgot_password_by_email_confirm_otp_without_field_digit_code_400(
         self, api_client_no_auth, faker_ru
     ):
-        email = faker_ru.email()
+        email = f"{faker_ru.bothify(text='autotest????####')}@example.test"
         payload = {"email": email}
         response = api_client_no_auth.post(
             UserEndpoints.FORGOT_PASSWORD_EMAIL_CONFIRM_OTP, json=payload

@@ -23,7 +23,7 @@ class TestForgotPasswordOtpEmailSend:
         body = response.json()
         assert body["status"] == "success"
         assert (
-            f"На указанный Email {email} отправлен временный код подтверждения"
+            f"На указанный Email {email.lower()} отправлен временный код подтверждения"
             in body["data"]["message"]
         )
         assert body["data"]["redirectUrl"] is None
@@ -61,7 +61,7 @@ class TestForgotPasswordOtpEmailSend:
     def test_forgot_password_by_email_send_otp_unregistered_email_502(
         self, api_client_no_auth, faker_ru
     ):
-        email = faker_ru.email()
+        email = f"{faker_ru.bothify(text='autotest????####')}@example.test"
         payload = {"email": email}
         response = api_client_no_auth.post(
             UserEndpoints.FORGOT_PASSWORD_EMAIL_SEND_OTP, json=payload

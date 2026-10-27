@@ -89,7 +89,7 @@ class TestLoginEmail:
         "POST /api/v1/auth/login/email Вход с email несуществующего пользователя"
     )
     def test_login_by_email_nonexistent_user_502(self, api_client_no_auth, faker_ru):
-        email = faker_ru.email()
+        email = f"{faker_ru.bothify(text='autotest????####')}@example.test"
         password = f"a1{faker_ru.password(length=4)}"
         payload = {"email": email, "password": password}
         response = api_client_no_auth.post(UserEndpoints.LOGIN_BY_EMAIL, json=payload)
@@ -99,7 +99,7 @@ class TestLoginEmail:
         assert body["status"] == "error"
         assert body["data"] is None
         assert (
-            f"Пользователь с указанным email '{email}' не найден"
+            f"Пользователь с указанным email '{email.lower()}' не найден"
             in body["errors"][0]["message"]
         )
         assert body["errors"][0]["code"] == 0
@@ -146,7 +146,7 @@ class TestLoginEmail:
         "POST /api/v1/auth/login/email Запрос без обязательного поля password"
     )
     def test_login_by_email_without_password_400(self, api_client_no_auth, faker_ru):
-        email = faker_ru.email()
+        email = f"{faker_ru.bothify(text='autotest????####')}@example.test"
         payload = {"email": email}
         response = api_client_no_auth.post(UserEndpoints.LOGIN_BY_EMAIL, json=payload)
 
