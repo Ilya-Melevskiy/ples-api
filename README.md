@@ -4,6 +4,7 @@
 Стек: `pytest`, `requests`, `allure`, `pymysql`
 
 ### Установка окружения
+
 ```powershell
 # Создать и активировать venv
 python -m venv venv
@@ -21,7 +22,7 @@ allure open allure-report
 
 # Если нужно просто быстро посмотреть
 allure serve allure-results
-
+```
 
 ### Структура проекта
 
@@ -68,3 +69,4 @@ API_TESTS_PLES/
 ├── pytest.ini                 # Конфиг pytest
 ├── requirements.txt
 └── README.md
+```
