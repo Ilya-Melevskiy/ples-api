@@ -1,7 +1,6 @@
 import allure
 import pytest
 from faker import Faker
-import re
 import pymysql
 from config.settings import settings
 
