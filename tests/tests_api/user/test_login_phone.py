@@ -197,7 +197,7 @@ class TestLoginPhone:
         self, api_client_no_auth, faker_phone_number_starting_8, faker_ru
     ):
         phone = faker_phone_number_starting_8
-        password = faker_ru.password()
+        password = f"a1{faker_ru.password(length=4)}"
         payload = {"phone": phone, "password": password}
         response = api_client_no_auth.post(UserEndpoints.LOGIN_BY_PHONE, json=payload)
 

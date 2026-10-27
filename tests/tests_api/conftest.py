@@ -194,6 +194,34 @@ def forgot_password_send_otp_phone(
 
 
 @pytest.fixture
+def forgot_password_confirm_otp_phone(
+    api_client_no_auth, forgot_password_send_otp_phone
+):
+    """Подтверждает OTP код по номеру и возвращает (phone) для восстановления пароля"""
+    phone, code = forgot_password_send_otp_phone
+    payload = {"phone": phone, "digitCode": code}
+    r = api_client_no_auth.post(
+        UserEndpoints.FORGOT_PASSWORD_PHONE_CONFIRM_OTP, json=payload
+    )
+    assert r.status_code == 200, r.text
+    return phone
+
+
+@pytest.fixture
+def forgot_password_confirm_otp_email(
+    api_client_no_auth, forgot_password_send_otp_email
+):
+    """Подтверждает OTP код по почте и возвращает (email) для восстановления пароля"""
+    email, code = forgot_password_send_otp_email
+    payload = {"email": email, "digitCode": code}
+    r = api_client_no_auth.post(
+        UserEndpoints.FORGOT_PASSWORD_EMAIL_CONFIRM_OTP, json=payload
+    )
+    assert r.status_code == 200, r.text
+    return email
+
+
+@pytest.fixture
 def login_by_email(api_client_no_auth, registration_natural_person):
     email = registration_natural_person["email"]
     password = registration_natural_person["password"]
@@ -201,4 +229,8 @@ def login_by_email(api_client_no_auth, registration_natural_person):
     response = api_client_no_auth.post(UserEndpoints.LOGIN_BY_EMAIL, json=payload)
 
     assert response.status_code == 200, response.text
-    return {"email": email, "password": password}
+    return {
+        "api_client_auth": api_client_no_auth,
+        "email": email,
+        "password": password,
+    }

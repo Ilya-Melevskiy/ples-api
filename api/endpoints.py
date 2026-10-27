@@ -8,8 +8,10 @@ class UserEndpoints:
     )
     FORGOT_PASSWORD_PHONE_SEND_OTP = "/api/v1/auth/forgotPassword/phone/otp/send"
     FORGOT_PASSWORD_PHONE_CONFIRM_OTP = "/api/v1/auth/forgotPassword/phone/otp/confirm"
-    FORGOT_PASSWORD_PHONE_CHANGE_OTP = "/api/v1/auth/forgotPassword/phone/otp/change"
-    LOGOUT = "/api/v1/auth/logout "
+    FORGOT_PASSWORD_PHONE_CHANGE_PASSWORD = (
+        "/api/v1/auth/forgotPassword/phone/otp/change"
+    )
+    LOGOUT = "/api/v1/auth/logout"
     REGISTRATION_EMAIL_SEND_OTP = "/api/v1/auth/register/otp/email/send"
     REGISTRATION_EMAIL_CONFIRM_OTP = "/api/v1/auth/register/otp/email/confirm"
     REGISTRATION_PHONE_SEND_OTP = "/api/v1/auth/register/otp/phone/send"

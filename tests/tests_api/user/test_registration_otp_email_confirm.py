@@ -22,7 +22,7 @@ class TestRegistrationByOtpEmailConfirm:
         assert response.status_code == 200
         body = response.json()
         assert body["status"] == "success"
-        assert "Email успешно подтержден" in body["data"]["message"]
+        assert "Email успешно подтвержден" in body["data"]["message"]
         assert body["errors"] == []
         assert body["data"]["redirectUrl"] is None
 

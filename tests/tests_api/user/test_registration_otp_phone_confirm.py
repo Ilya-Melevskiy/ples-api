@@ -22,7 +22,7 @@ class TestRegistrationOtpPhoneConfirm:
         assert response.status_code == 200
         body = response.json()
         assert body["status"] == "success"
-        assert "Номер телефона успешно подтержден" in body["data"]["message"]
+        assert "Номер телефона успешно подтвержден" in body["data"]["message"]
         assert body["errors"] == []
         assert body["data"]["redirectUrl"] is None
 

@@ -50,7 +50,7 @@ class TestForgotPasswordByOtpPhoneConfirm:
     @allure.title(
         "POST /api/v1/auth/forgotPassword/phone/otp/confirm Подтверждение для не зарегистрированного номера"
     )
-    def test_forgot_password_by_phone_confirm_otp_unregistered_phone_502(
+    def test_forgot_password_by_phone_confirm_otp_unregistered_phone_500(
         self, api_client_no_auth, faker_phone_number_starting_plus_7, faker_ru
     ):
         phone = faker_phone_number_starting_plus_7()
