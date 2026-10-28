@@ -1,9 +1,10 @@
 # API Tests — PLES
 
-Автотесты API для сайта на 1С-Битрикс. 
-Стек: `pytest`, `requests`, `allure`, `pymysql`
+Автотесты API для сайта на 1С-Битрикс. Стек: `pytest`, `requests`, `allure`, `pymysql`.
 
-### Установка окружения
+---
+
+## Установка окружения
 
 ```powershell
 # Создать и активировать venv
@@ -12,19 +13,44 @@ python -m venv venv
 
 # Установить зависимости
 python -m pip install -r requirements.txt
+```
 
+---
 
+## 🏃 Запуск тестов
+
+Всегда запускай **из корня проекта** — где лежит `pytest.ini`:
+
+```powershell
+# Все тесты
+python -m pytest tests 
+
+# Только конкретный файл
+python -m pytest tests/tests_api/user/test_login_email.py
+
+# Упавшие в прошлый раз
+python -m pytest tests --lf
+```
+
+> **Важно:** запуск через `python -m pytest` (не просто `pytest`). Иначе возможен `ModuleNotFoundError: No module named 'api'` — `python -m` добавляет корень проекта в `sys.path`.
+
+---
+
+## 📊 Allure-отчёты
+
+```powershell
 # Сгенерировать HTML отчёт (--clean обязателен, иначе упадёт)
-allure generate allure-results -o allure-report --clean 
+allure generate allure-results -o allure-report --clean
 
 # Открыть отчёт в браузере
 allure open allure-report
 
 # Если нужно просто быстро посмотреть
 allure serve allure-results
-```
 
 ### Структура проекта
+```
+---
 
 ```text
 API_TESTS_PLES/
