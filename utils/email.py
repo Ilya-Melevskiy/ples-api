@@ -10,12 +10,7 @@ class EmailService:
         timeout: float = 15,
         poll_interval: float = 0.5,
     ) -> str:
-        """
-        Ждёт письмо с OTP-кодом на email в b_event.
-        Ищет OTP_CODE в C_FIELDS, берёт последнее по DATE_EXEC.
-        Фильтр по EVENT_NAME = EMAIL_USER_OTP_AUTH_CODE.
-        Без фильтра по времени — email уникален на тест (faker), race не нужен.
-        """
+        """Достает OTP-код из письма на email в b_event."""
         deadline = time.monotonic() + timeout
 
         while time.monotonic() < deadline:

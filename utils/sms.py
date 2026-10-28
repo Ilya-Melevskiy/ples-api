@@ -10,11 +10,7 @@ class SMSService:
         timeout: float = 5,
         poll_interval: float = 0.5,
     ) -> str:
-        """
-        Ждёт SMS-код, появившийся в b_event_log ПОСЛЕ старта метода.
-        Не требует old_code: фильтрует по TIMESTAMP_X.
-        Бросает SMSCodeTimeoutError при таймауте.
-        """
+        """Достает OTP-код из СМС в b_event_log."""
 
         phone_with_plus = phone if phone.startswith("+") else f"+{phone}"
 
