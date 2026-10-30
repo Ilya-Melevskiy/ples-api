@@ -28,7 +28,11 @@ class APIClient:
                     attachment_type=allure.attachment_type.JSON,
                 )
             if "params" in kwargs:
-                allure.attach(str(kwargs["params"]), name="query params")
+                allure.attach(
+                    json.dumps(kwargs["params"], indent=2, ensure_ascii=False),
+                    name="query params",
+                    attachment_type=allure.attachment_type.JSON,
+                )
             response = self.session.request(method, url, **kwargs)
 
             allure.attach(

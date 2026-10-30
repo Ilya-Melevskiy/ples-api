@@ -7,6 +7,9 @@ from utils.sms import SMSService
 from utils.email import EmailService
 
 
+fake = Faker()
+
+
 @pytest.fixture
 def api_client_no_auth():
     """
@@ -15,9 +18,6 @@ def api_client_no_auth():
     api = APIClient(token="")
     yield api
     api.close()
-
-
-fake = Faker()
 
 
 @pytest.fixture
@@ -229,7 +229,7 @@ def forgot_password_confirm_otp_email(
 def login_by_email(api_client_no_auth, registration_natural_person):
     """
     Регистрирует пользователя (физ. лицо) и авторизовывается под ним,
-    возвращает (api_client_auth), email, password
+    возвращает (api_client_auth, email, password)
     """
     email = registration_natural_person["email"]
     password = registration_natural_person["password"]
